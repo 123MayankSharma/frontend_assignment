@@ -1,7 +1,7 @@
-import { PlayCircleTwoTone,AppstoreTwoTone,HistoryOutlined} from '@ant-design/icons';
+import { PlayCircleTwoTone, AppstoreTwoTone, HistoryOutlined } from '@ant-design/icons';
 import { Menu } from 'antd';
 import { Layout } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Cards from './Cards';
 import History from './History';
 const { Header, Content, Sider } = Layout;
@@ -14,6 +14,9 @@ function getItem(label, key, icon, children, type) {
     type,
   };
 }
+
+
+
 const items = [
   getItem('Categories', 'Categories',<AppstoreTwoTone />, [
   getItem('Nature', '1',<PlayCircleTwoTone/>),
@@ -22,15 +25,33 @@ const items = [
   ]),
   getItem('History','History',<HistoryOutlined />)
 ];
+console.log(items)
 const Sidebar = () => {
-  const [isCategory,setIsCategory]=useState(false)
-  const [selectedItem,setSelectedItem]=useState("")
+  const [isCategory, setIsCategory] = useState(false)
+  const [selectedItem, setSelectedItem] = useState("")
+  const [category, setCategory] = useState([])
+
+  useEffect(() => {
+
+    (async function (){
+          let categories = await fetch("http://localhost:8000/");
+          categories = await categories.json()
+          const item = [getItem('Categories', 'Categories', <AppstoreTwoTone />,
+            categories.map((val, idx) => {
+              const elementObj = getItem(val.title, val._id, <PlayCircleTwoTone />)
+              return elementObj;
+            })
+          ), getItem('History', 'History', <HistoryOutlined />)]
+          setCategory(item)
+        })()
+
+  },[])
   // const Navigate=useNavigate()
-  const clickHandler=(e)=>{
-    const clickedItem=e.keyPath[0];
+  const clickHandler = (e) => {
+    const clickedItem = e.keyPath[0];
     setSelectedItem(clickedItem)
     // clickedItem==="History"?Navigate("/history"):Navigate(`/Categories/${e.keyPath[0]}`)
-    clickedItem==="History"?setIsCategory(false):setIsCategory(true)
+    clickedItem === "History" ? setIsCategory(false) : setIsCategory(true)
 
   }
   return (
@@ -42,36 +63,34 @@ const Sidebar = () => {
         <Sider
           width={200}
           style={{
-            backgroundColor:"black",
+            backgroundColor: "black",
           }}
         >
-    <Menu
-      style={{
-        width: 256,
-        height:"100vh",
-        minHeight:"100%"
-      }}
-      defaultSelectedKeys={['1']}
-      defaultOpenKeys={['Categories']}
-      mode="vertical"
-      items={items}
-      theme={"dark"}
-      onClick={clickHandler}
-    />
-    </Sider>
-    <Content
-    style={{
-        padding: 100,
-        margin: 0,
-        minHeight: 280,
-        backgroundColor:"white",
-      }}
-    >
+          <Menu
+            style={{
+              width: 256,
+              height: "100vh",
+              minHeight: "100%"
+            }}
+            mode="vertical"
+            items={category}
+            theme={"dark"}
+            onClick={clickHandler}
+          />
+        </Sider>
+        <Content
+          style={{
+            padding: 100,
+            margin: 0,
+            minHeight: 280,
+            backgroundColor: "white",
+          }}
+        >
           {
-            isCategory?<Cards item={selectedItem}/>:<History/>
+            isCategory ? <Cards item={selectedItem} /> : <History item={selectedItem}/>
           }
-    </Content>
-    </Layout>
+        </Content>
+      </Layout>
     </Layout>
   );
 };
