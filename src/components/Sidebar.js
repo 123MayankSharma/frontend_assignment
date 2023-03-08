@@ -48,7 +48,8 @@ const Sidebar = () => {
     <Menu
       style={{
         width: 256,
-        height:"100%",
+        height:"100vh",
+        minHeight:"100%"
       }}
       defaultSelectedKeys={['1']}
       defaultOpenKeys={['Categories']}
