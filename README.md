@@ -1,3 +1,3 @@
 # Getting Started with Create React App
 
-[Link to the backend repo](https://github.com/assignment_backend)
+[Link to the backend repo](https://github.com/123MayankSharma/assignment_backend)
