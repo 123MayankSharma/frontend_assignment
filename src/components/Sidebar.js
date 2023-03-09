@@ -25,7 +25,7 @@ const items = [
   ]),
   getItem('History','History',<HistoryOutlined />)
 ];
-console.log(items)
+
 const Sidebar = () => {
   const [isCategory, setIsCategory] = useState(false)
   const [selectedItem, setSelectedItem] = useState("")
@@ -87,7 +87,7 @@ const Sidebar = () => {
           }}
         >
           {
-            isCategory ? <Cards item={selectedItem} /> : <History item={selectedItem}/>
+            isCategory ? <Cards item={selectedItem} category={category} /> : <History item={selectedItem}/>
           }
         </Content>
       </Layout>
